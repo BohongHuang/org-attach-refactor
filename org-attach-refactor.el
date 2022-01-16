@@ -8,6 +8,7 @@
   (directory-files filename t "^\\([^.]\\|\\.[^.]\\|\\.\\..\\)"))
 
 (defun org-attach-refactor-remove-id ()
+  "Remove ID of current heading and move all attachments in current heading into parent attachment directory."
   (interactive)
   (unless (org-id-get) (error "Cannot find the existent ID of current heading"))
   (unless org-attach-use-inheritance (error "org-attach-use-inheritance must be t"))
@@ -25,6 +26,7 @@
           (org-id-update-id-locations nil 'silent))))))
 
 (defun org-attach-refactor-add-id ()
+  "Add ID for current heading and move all previous inherited attachments into the attachment directory of current heading."
   (interactive)
   (when (org-id-get) (error "Current heading already has ID"))
   (unless org-attach-use-inheritance (error "org-attach-use-inheritance must be t"))
@@ -48,3 +50,5 @@
       (let ((attach-dir (concat (concat (org-attach-dir-get-create) "/"))))
            (-each attach-filenames (lambda (filename)
                                      (rename-file filename attach-dir)))))))
+
+(provide 'org-attach-refactor)
