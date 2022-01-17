@@ -35,6 +35,7 @@
     (let ((original-attach-dir (org-attach-dir))
           (attach-filenames nil))
       (save-excursion
+        (org-back-to-heading)
         (while (re-search-forward "attachment:" nil t)
           (when (string-equal (org-attach-dir) original-attach-dir)
             (let ((link (org-element-context)))
@@ -46,7 +47,7 @@
     				          (org-element-property :contents-begin link)
     				          (org-element-property :contents-end link))))
     		       (file (org-element-property :path link)))
-                  (add-to-list 'attach-filenames (concat original-attach-dir "/" file))))))))
+                  (push (concat original-attach-dir "/" file) attach-filenames)))))))
       (org-id-get-create)
       (let ((attach-dir (concat (concat (org-attach-dir-get-create) "/"))))
         (-each attach-filenames (lambda (filename)
