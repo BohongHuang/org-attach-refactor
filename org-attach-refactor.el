@@ -36,19 +36,20 @@
           (attach-filenames nil))
       (save-excursion
         (while (re-search-forward "attachment:" nil t)
-          (let ((link (org-element-context)))
-    	    (when (and (eq 'link (org-element-type link))
-    		       (string-equal "attachment"
-    				     (org-element-property :type link)))
-    	      (let* ((description (and (org-element-property :contents-begin link)
-    				       (buffer-substring-no-properties
-    				        (org-element-property :contents-begin link)
-    				        (org-element-property :contents-end link))))
-    		     (file (org-element-property :path link)))
-                (add-to-list 'attach-filenames (concat original-attach-dir "/" file)))))))
+          (when (string-equal (org-attach-dir) original-attach-dir)
+            (let ((link (org-element-context)))
+    	      (when (and (eq 'link (org-element-type link))
+    		         (string-equal "attachment"
+    				       (org-element-property :type link)))
+    	        (let* ((description (and (org-element-property :contents-begin link)
+    				         (buffer-substring-no-properties
+    				          (org-element-property :contents-begin link)
+    				          (org-element-property :contents-end link))))
+    		       (file (org-element-property :path link)))
+                  (add-to-list 'attach-filenames (concat original-attach-dir "/" file))))))))
       (org-id-get-create)
       (let ((attach-dir (concat (concat (org-attach-dir-get-create) "/"))))
-           (-each attach-filenames (lambda (filename)
-                                     (rename-file filename attach-dir)))))))
+        (-each attach-filenames (lambda (filename)
+                                  (rename-file filename attach-dir)))))))
 
 (provide 'org-attach-refactor)
